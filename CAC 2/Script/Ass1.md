@@ -1,6 +1,6 @@
 <img src="image.jpg" style="height:464px;margin-right:432px"/>
-#HAJAR HAMINE
-# apogée 22001267
+## HAJAR HAMINE
+## Numero apogée 22001267
 # 🩺 Analyse descriptive de la base de données Heart Disease
 Le rapport heart_disease_analysis.md présente une analyse descriptive du jeu de données Heart Disease, contenant des informations médicales sur des patients pour étudier les facteurs liés aux maladies cardiaques. Il résume les statistiques principales, montre que les hommes âgés avec une tension et un cholestérol élevés sont plus à risque, et identifie certaines variables comme oldpeak, ca et thal comme indicateurs importants. Enfin, il recommande de poursuivre l’analyse par un modèle prédictif pour mieux évaluer le risque cardiaque.
 ## 1. Présentation générale du jeu de données
