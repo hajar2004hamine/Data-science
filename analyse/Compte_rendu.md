@@ -1,4 +1,5 @@
 # HAMINE Hajar
+<img src="image.jpeg" style="height:300px;margin-right:300px; float:left; border-radius:10px;"/>
 
 **Numéro d'étudiant** : 22001267 
 **Classe** : CAC2
@@ -47,6 +48,18 @@ Le dataset contient 31 948 observations réparties sur deux colonnes :
 - `label` : sentiment catégoriel (negative, neutral, positive).
 
 Les deux colonnes sont de type chaîne de caractères.
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Chargement du dataset
+df = pd.read_csv("reddit_sentiment_analysis.csv")  # adapte le chemin au besoin
+print("Structure du dataset :")
+print(df.info())
+print("\nAperçu des premières lignes:")
+print(df.head())
+```
 
 ### 2.2 Variable Cible et Variables Explicatives
 
@@ -62,6 +75,10 @@ Pour rendre la tâche compatible avec des modèles de régression, la variable c
 - positive → 1
 
 Une nouvelle colonne `sentimentscore` est créée avec ces valeurs numériques.
+```python
+sentiment_mapping = {"negative": -1, "neutral": 0, "positive": 1}
+df["sentimentscore"] = df["label"].map(sentiment_mapping)
+```
 
 ### 2.4 Statistiques et Visualisations
 
@@ -73,7 +90,14 @@ Une nouvelle colonne `sentimentscore` est créée avec ces valeurs numériques.
 - Aucune valeur manquante détectée.
 
 - Les textes ont été vectorisés avec un **TF-IDF Vectorizer** limité à 5 000 caractéristiques pour gérer la haute dimensionnalité.
-
+```python
+plt.figure(figsize=(8,5))
+sns.countplot(data=df, x='label', palette='Set2')
+plt.title("Distribution des labels sentiments")
+plt.xlabel("Label")
+plt.ylabel("Nombre d'exemples")
+plt.show()
+```
 ---
 
 ## 3. Méthodologie de Régression
@@ -81,6 +105,13 @@ Une nouvelle colonne `sentimentscore` est créée avec ces valeurs numériques.
 ### 3.1 Préparation des Données et TF-IDF
 
 Le texte brut est transformé en matrice numérique TF-IDF qui sert d'entrée aux modèles.
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectorizer = TfidfVectorizer(max_features=5000)
+X_tfidf = vectorizer.fit_transform(df["text"])
+y = df["sentimentscore"]
+```
 
 ### 3.2 Séparation Train/Test
 
@@ -90,6 +121,13 @@ Les données ont été divisées en :
 - Test (20%)
 
 avec un split aléatoire contrôlé pour validation robuste.
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_tfidf, y, test_size=0.2, random_state=42
+)
+```
 
 ### 3.3 Modèles de Régression Testés
 
@@ -108,6 +146,19 @@ Ces modèles permettent d'explorer la capacité à modéliser la relation entre 
 - Coefficient de détermination (R²) : 0.3411
 
 Le modèle linéaire explique environ 34% de la variance du score, indiquant une relation modérée mais insuffisante pour des prédictions précises.
+```python
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+lr = LinearRegression()
+lr.fit(X_train, y_train)
+y_pred_lr = lr.predict(X_test)
+
+mse_lr = mean_squared_error(y_test, y_pred_lr)
+r2_lr = r2_score(y_test, y_pred_lr)
+
+print(f"Régression Linéaire - MSE: {mse_lr:.4f}, R2: {r2_lr:.4f}")
+```
 
 ### 4.2 Régression Polynomiale de Degré 2
 
@@ -115,6 +166,19 @@ Le modèle linéaire explique environ 34% de la variance du score, indiquant une
 - R² augmenté à environ 0.4225
 
 La prise en compte des termes quadratiques apporte une meilleure capture de la complexité non linéaire des données.
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+poly = make_pipeline(PolynomialFeatures(degree=2), LinearRegression())
+poly.fit(X_train, y_train)
+y_pred_poly = poly.predict(X_test)
+
+mse_poly = mean_squared_error(y_test, y_pred_poly)
+r2_poly = r2_score(y_test, y_pred_poly)
+
+print(f"Régression Polynomiale (deg2) - MSE: {mse_poly:.4f}, R2: {r2_poly:.4f}")
+```
 
 ### 4.3 Régression par Arbre de Décision
 
@@ -122,8 +186,25 @@ La prise en compte des termes quadratiques apporte une meilleure capture de la c
 - R² négatif : -0.0916 indiquant une performance inférieure à une prédiction moyenne.
 
 Probable surapprentissage sans réglage fin des hyperparamètres ; pas adaptée à la nature très dispersée des caractéristiques TF-IDF.
+```python
+from sklearn.tree import DecisionTreeRegressor
 
----
+dt = DecisionTreeRegressor(random_state=42)
+dt.fit(X_train, y_train)
+y_pred_dt = dt.predict(X_test)
+
+mse_dt = mean_squared_error(y_test, y_pred_dt)
+r2_dt = r2_score(y_test, y_pred_dt)
+
+print(f"Régression Arbre de Décision - MSE: {mse_dt:.4f}, R2: {r2_dt:.4f}")
+```
+```python
+| Modèle                       | Mean Squared Error (MSE) | Coefficient de Détermination (R²) |
+| ---------------------------- | ------------------------ | --------------------------------- |
+| Régression Linéaire Simple   | mse_lr                   | r2_lr                             |
+| Régression Polynomiale Deg 2 | mse_poly                 | r2_poly                           |
+| Régression Arbre de Décision | mse_dt                   | r2_dt                             |
+```
 
 ## 5. Conclusion et Perspectives
 
