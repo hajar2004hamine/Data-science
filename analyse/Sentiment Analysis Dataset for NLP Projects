@@ -1,1 +1,310 @@
+# Interprétation du code
 
+## Cellule 1
+
+    #Importing Libraries
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    #For ignoring warning
+    import warnings
+    warnings.filterwarnings("ignore")
+
+## Cellule 2
+
+    df=pd.read_csv('/content/drive/MyDrive/Préparation Examen /prédiction/Analyse/Sentiment Analysis Dataset for NLP Projects.zip')
+    df
+
+## Cellule 3
+
+    #Importing Libraries
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    #For ignoring warning
+    import warnings
+    warnings.filterwarnings("ignore")
+
+## Cellule 4
+
+    df=pd.read_csv('/content/drive/MyDrive/Préparation Examen /prédiction/Analyse/Sentiment Analysis Dataset for NLP Projects.zip')
+    df
+
+## Cellule 5
+
+    df.head()
+
+## Cellule 6
+
+    df.info()
+
+## Cellule 7
+
+    df.describe()
+
+## Cellule 8
+
+    df['label'].value_counts()
+
+## Cellule 9
+
+    sentiment_mapping = {'negative': -1, 'neutral': 0, 'positive': 1}
+    df['sentiment_score'] = df['label'].map(sentiment_mapping)
+    df.head()
+
+## Cellule 10
+
+    df.isnull().sum()
+
+## Cellule 11
+
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    # Initialize TfidfVectorizer
+    tfidf_vectorizer = TfidfVectorizer(max_features=5000)  # Limiting features to 5000 for manageability
+
+    # Fit and transform the 'text' column
+    X = tfidf_vectorizer.fit_transform(df['text'])
+    y = df['sentiment_score']
+
+    print("Shape of X (features):")
+    print(X.shape)
+    print("Shape of y (target):")
+    print(y.shape)
+
+## Cellule 12
+
+    from sklearn.model_selection import train_test_split
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    print("Shape of X_train:", X_train.shape)
+    print("Shape of X_test:", X_test.shape)
+    print("Shape of y_train:", y_train.shape)
+    print("Shape of y_test:", y_test.shape)
+
+## Cellule 13
+
+    from sklearn.linear_model import LinearRegression
+    from sklearn.metrics import mean_squared_error, r2_score
+
+    # 3. Créez une instance du modèle LinearRegression.
+    lr_model = LinearRegression()
+
+    # 4. Entraînez le modèle sur les données d'entraînement X_train et y_train.
+    lr_model.fit(X_train, y_train)
+
+    # 5. Effectuez des prédictions sur les données de test X_test.
+    y_pred_lr = lr_model.predict(X_test)
+
+    # 6. Calculez l'erreur quadratique moyenne (MSE).
+    mse_lr = mean_squared_error(y_test, y_pred_lr)
+
+    # 7. Calculez le coefficient de détermination (R-squared score).
+    r2_lr = r2_score(y_test, y_pred_lr)
+
+    # 8. Affichez les valeurs de MSE et du R-squared score.
+    print(f"Régression Linéaire Simple:\n")
+    print(f"  Mean Squared Error (MSE): {mse_lr:.4f}")
+    print(f"  R-squared (R2) Score: {r2_lr:.4f}\n")
+
+    # 9. Créez un graphique de dispersion (scatter plot) pour visualiser les valeurs réelles par rapport aux valeurs prédites.
+    plt.figure(figsize=(14, 6))
+
+    plt.subplot(1, 2, 1)
+    sns.scatterplot(x=y_test, y=y_pred_lr, alpha=0.6)
+    plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--', lw=2) # Ligne y=x
+    plt.xlabel("Valeurs Réelles (y_test)")
+    plt.ylabel("Valeurs Prédites (y_pred_lr)")
+    plt.title("Régression Linéaire: Valeurs Réelles vs. Prédites")
+    plt.grid(True)
+
+    # 11. Créez un graphique des résidus.
+    residuals_lr = y_test - y_pred_lr
+    plt.subplot(1, 2, 2)
+    sns.scatterplot(x=y_pred_lr, y=residuals_lr, alpha=0.6)
+    plt.axhline(y=0, color='r', linestyle='--', lw=2)
+    plt.xlabel("Valeurs Prédites (y_pred_lr)")
+    plt.ylabel("Résidus")
+    plt.title("Régression Linéaire: Graphique des Résidus")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    print("\nCommentaires sur le modèle de régression linéaire simple:\n")
+    print("Le modèle de régression linéaire simple, appliqué sur les caractéristiques TF-IDF du texte pour prédire le score de sentiment, montre des performances modestes.")
+    print(f"Le MSE de {mse_lr:.4f} indique la moyenne des carrés des erreurs, ce qui nous donne une idée de l'ampleur des erreurs de prédiction. Un MSE plus faible est préférable.")
+    print(f"Le coefficient R-squared de {r2_lr:.4f} signifie qu'environ {r2_lr*100:.2f}% de la variance dans le score de sentiment peut être expliquée par les caractéristiques textuelles.")
+    print("Un R-squared proche de 0 indique que le modèle explique très peu la variabilité de la variable dépendante, suggérant que la relation linéaire est faible ou que le modèle n'est pas bien adapté aux données.")
+    print("Le graphique des valeurs réelles vs. prédites montre une dispersion significative autour de la ligne y=x, confirmant la performance limitée du modèle.")
+    print("Le graphique des résidus, bien qu'il ne montre pas de motif clair, confirme que les erreurs sont dispersées, mais l'absence de regroupement autour de zéro pour toutes les prédictions suggère que le modèle ne capture pas toutes les relations complexes dans les données de sentiment.")
+    print("En conclusion, la régression linéaire simple est probablement trop rudimentaire pour capturer les nuances des données de sentiment textuelles, et des modèles plus complexes ou des approches différentes (comme la classification) pourraient être plus appropriés.")
+
+## Cellule 14
+
+    from sklearn.preprocessing import PolynomialFeatures
+    from sklearn.pipeline import make_pipeline
+
+    # Define the degree for polynomial features
+    degree = 2
+
+    # Create a pipeline for polynomial regression
+    # This pipeline first transforms features to polynomial features and then applies linear regression
+    poly_model = make_pipeline(PolynomialFeatures(degree),
+                               LinearRegression())
+
+    # Train the polynomial regression model on the training data
+    poly_model.fit(X_train, y_train)
+
+    # Make predictions on the test data
+    y_pred_poly = poly_model.predict(X_test)
+
+    # Calculate Mean Squared Error (MSE)
+    mse_poly = mean_squared_error(y_test, y_pred_poly)
+
+    # Calculate R-squared (R2) score
+    r2_poly = r2_score(y_test, y_pred_poly)
+
+    # Display the calculated MSE and R2 values
+    print(f"Régression Polynomiale (Degré {degree}):\n")
+    print(f"  Mean Squared Error (MSE): {mse_poly:.4f}")
+    print(f"  R-squared (R2) Score: {r2_poly:.4f}\n")
+
+    # Create a scatter plot for actual vs. predicted values
+    plt.figure(figsize=(14, 6))
+
+    plt.subplot(1, 2, 1)
+    sns.scatterplot(x=y_test, y=y_pred_poly, alpha=0.6)
+    plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--', lw=2) # Line y=x
+    plt.xlabel("Valeurs Réelles (y_test)")
+    plt.ylabel("Valeurs Prédites (y_pred_poly)")
+    plt.title(f"Régression Polynomiale (Degré {degree}): Valeurs Réelles vs. Prédites")
+    plt.grid(True)
+
+    # Calculate residuals and create a scatter plot of predicted values vs. residuals
+    residuals_poly = y_test - y_pred_poly
+    plt.subplot(1, 2, 2)
+    sns.scatterplot(x=y_pred_poly, y=residuals_poly, alpha=0.6)
+    plt.axhline(y=0, color='r', linestyle='--', lw=2)
+    plt.xlabel("Valeurs Prédites (y_pred_poly)")
+    plt.ylabel("Résidus")
+    plt.title(f"Régression Polynomiale (Degré {degree}): Graphique des Résidus")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    print("\nCommentaires sur le modèle de régression polynomiale:")
+    print(f"Le modèle de régression polynomiale de degré {degree} a été implémenté pour tenter de capturer des relations non linéaires dans les données de sentiment.\n")
+    print(f"Le MSE obtenu est de {mse_poly:.4f}, ce qui représente l'erreur moyenne au carré des prédictions. Une valeur plus faible indique un meilleur ajustement du modèle aux données.\n")
+    print(f"Le coefficient R-squared est de {r2_poly:.4f}. Cela signifie qu'environ {r2_poly*100:.2f}% de la variance de la variable cible (sentiment_score) est expliquée par le modèle polynomial et les caractéristiques TF-IDF.\n")
+    print("Comparativement à la régression linéaire simple, un R-squared plus élevé et un MSE potentiellement plus faible indiqueraient une meilleure performance. Cependant, un degré de 2 peut ne pas être suffisant pour capturer toutes les complexités, ou cela pourrait entraîner un surapprentissage si les relations ne sont pas véritablement polynomiales.\n")
+    print("Le graphique des valeurs réelles vs. prédites montre comment les prédictions du modèle polynomial se positionnent par rapport aux vraies valeurs. Idéalement, les points devraient être regroupés autour de la ligne rouge y=x. Une dispersion importante indique que le modèle a encore du mal à prédire précisément le score de sentiment.\n")
+    print("Le graphique des résidus aide à diagnostiquer l'adéquation du modèle. Si les résidus sont répartis de manière aléatoire autour de la ligne zéro sans motif apparent, cela suggère que le modèle capture bien les relations. La présence d'un motif, comme un cône ou une courbure, indiquerait des problèmes avec les hypothèses du modèle (par exemple, non-linéarité manquante ou hétéroscédasticité).\n")
+    print("Dans ce cas, comme pour la régression linéaire simple, les graphiques montrent une dispersion des prédictions, et un R-squared toujours modeste, ce qui suggère que même avec une complexité polynomiale de degré 2, le modèle pourrait ne pas être optimal pour ce jeu de données textuelles et cette tâche de régression. Des degrés plus élevés ou d'autres techniques de modélisation pourraient être explorés.")
+
+## Cellule 15
+
+    from sklearn.tree import DecisionTreeRegressor
+
+    # 2. Créez une instance du modèle DecisionTreeRegressor.
+    dt_model = DecisionTreeRegressor(random_state=42) # Utilisation d'un random_state pour la reproductibilité
+
+    # 3. Entraînez le modèle sur les données d'entraînement X_train et y_train.
+    dt_model.fit(X_train, y_train)
+
+    # 4. Effectuez des prédictions sur les données de test X_test.
+    y_pred_dt = dt_model.predict(X_test)
+
+    # 5. Calculez l'erreur quadratique moyenne (MSE).
+    mse_dt = mean_squared_error(y_test, y_pred_dt)
+
+    # 6. Calculez le coefficient de détermination (R-squared score).
+    r2_dt = r2_score(y_test, y_pred_dt)
+
+    # 7. Affichez les valeurs de MSE et du R-squared score.
+    print(f"Régression par Arbre de Décision:\n")
+    print(f"  Mean Squared Error (MSE): {mse_dt:.4f}")
+    print(f"  R-squared (R2) Score: {r2_dt:.4f}\n")
+
+    # 8. Créez un graphique de dispersion (scatter plot) pour visualiser les valeurs réelles par rapport aux valeurs prédites.
+    plt.figure(figsize=(14, 6))
+
+    plt.subplot(1, 2, 1)
+    sns.scatterplot(x=y_test, y=y_pred_dt, alpha=0.6)
+    plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--', lw=2) # Ligne y=x
+    plt.xlabel("Valeurs Réelles (y_test)")
+    plt.ylabel("Valeurs Prédites (y_pred_dt)")
+    plt.title("Régression par Arbre de Décision: Valeurs Réelles vs. Prédites")
+    plt.grid(True)
+
+    # 10. Calculez les résidus et créez un graphique des résidus.
+    residuals_dt = y_test - y_pred_dt
+    plt.subplot(1, 2, 2)
+    sns.scatterplot(x=y_pred_dt, y=residuals_dt, alpha=0.6)
+    plt.axhline(y=0, color='r', linestyle='--', lw=2)
+    plt.xlabel("Valeurs Prédites (y_pred_dt)")
+    plt.ylabel("Résidus")
+    plt.title("Régression par Arbre de Décision: Graphique des Résidus")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    print("\nCommentaires sur le modèle de régression par arbre de décision:\n")
+    print(f"Le modèle de régression par arbre de décision a été entraîné pour prédire le score de sentiment. Il offre un MSE de {mse_dt:.4f} et un R-squared de {r2_dt:.4f}.\n")
+    print("Un arbre de décision peut capturer des relations non linéaires et des interactions entre les caractéristiques, ce qui pourrait être un avantage par rapport aux modèles linéaires.\n")
+    print("Cependant, sans ajustement des hyperparamètres (comme la profondeur maximale de l'arbre), il peut être sujet au surapprentissage, surtout avec des données de haute dimensionnalité comme les caractéristiques TF-IDF.")
+    print("Le R-squared, bien que potentiellement meilleur que celui de la régression linéaire simple ou polynomiale de degré 2, reste modeste, indiquant que l'arbre de décision n'explique qu'une fraction de la variance totale de la variable cible. Cela suggère que le modèle peut encore avoir du mal à généraliser sur des données non vues ou que la complexité inhérente à la prédiction du sentiment à partir de texte est élevée.\n")
+    print("Les graphiques des valeurs réelles vs. prédites et des résidus montrent une dispersion similaire aux modèles précédents, avec des prédictions qui ne s'alignent pas parfaitement sur la ligne y=x et des résidus dispersés sans schéma clair, mais avec une concentration autour des valeurs discrètes -1, 0, 1 en raison de la nature de la variable cible encodée. Cela est caractéristique des arbres de décision qui prédisent des valeurs discrètes ou une plage limitée de valeurs.\n")
+    print("Pour améliorer ce modèle, une optimisation des hyperparamètres (par exemple, `max_depth`, `min_samples_leaf`) et/ou l'utilisation de méthodes d'ensemble (comme les Forêts Aléatoires ou le Gradient Boosting) seraient des étapes suivantes à envisager.")
+
+## Cellule 16
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # 1. Créez un dictionnaire contenant les noms des modèles, leurs MSE respectifs et leurs scores R-squared.
+    performance_data = {
+        'Modèle': ['Régression Linéaire Simple', 'Régression Polynomiale (Degré 2)', 'Régression par Arbre de Décision'],
+        'MSE': [mse_lr, mse_poly, mse_dt],
+        'R-squared': [r2_lr, r2_poly, r2_dt]
+    }
+
+    # 2. Convertissez ce dictionnaire en un DataFrame pandas.
+    performance_df = pd.DataFrame(performance_data)
+
+    # 3. Affichez ce DataFrame.
+    print("Comparaison des performances des modèles de régression:")
+    print(performance_df.to_markdown(index=False))
+
+## Cellule 17
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Modèle', y='MSE', data=performance_df, palette='viridis')
+    plt.title('Comparaison du Mean Squared Error (MSE) des Modèles de Régression', fontsize=16)
+    plt.xlabel('Modèle de Régression', fontsize=12)
+    plt.ylabel('Mean Squared Error (MSE)', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+## Cellule 18
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Modèle', y='R-squared', data=performance_df, palette='magma')
+    plt.title('Comparaison du R-squared (R2) des Modèles de Régression', fontsize=16)
+    plt.xlabel('Modèle de Régression', fontsize=12)
+    plt.ylabel('R-squared (R2) Score', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
