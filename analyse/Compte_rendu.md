@@ -199,11 +199,11 @@ r2_dt = r2_score(y_test, y_pred_dt)
 print(f"Régression Arbre de Décision - MSE: {mse_dt:.4f}, R2: {r2_dt:.4f}")
 ```
 ```python
-| Modèle                       | Mean Squared Error (MSE) | Coefficient de Détermination (R²) |
-| ---------------------------- | ------------------------ | --------------------------------- |
-| Régression Linéaire Simple   | mse_lr                   | r2_lr                             |
-| Régression Polynomiale Deg 2 | mse_poly                 | r2_poly                           |
-| Régression Arbre de Décision | mse_dt                   | r2_dt                             |
+| Modèle                           | MSE    | R² Score |
+| -------------------------------- | ------ | -------- |
+| Régression Linéaire Simple       | 0.2321 | 0.3411   |
+| Régression Polynomiale (Degré 2) | 0.2034 | 0.4225   |
+| Arbre de Décision                | 0.3845 | -0.0916  |
 ```
 
 ## 5. Conclusion et Perspectives
