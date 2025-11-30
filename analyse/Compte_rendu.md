@@ -8,7 +8,7 @@
 # Compte rendu
 ## Analyse Prédictive de Régression sur Jeu de Données Reddit Sentiment Analysis
 
-**Date :** 30 Novembre 2025
+**Date :** 26 Novembre 2025
 
 ---
 
