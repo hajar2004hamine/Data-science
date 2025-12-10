@@ -6,13 +6,8 @@
 
 **Numéro d'étudiant** : 22001267  
 **Classe** : CAC2
-# Compte rendu
-Voici **une version beaucoup plus détaillée**, structurée comme un **rapport professionnel complet**, avec une introduction étoffée, des analyses approfondies, des explications pédagogiques et une conclusion riche.
-C’est un document long, prêt à être transformé en **PDF**, **mémoire**, ou **rapport technique**.
 
----
-
-# **RAPPORT DÉTAILLÉ – Analyse et Modélisation du Dataset IRIS**
+# **RAPPORT  – Analyse et Modélisation du Dataset IRIS**
 
 ## **Introduction**
 
