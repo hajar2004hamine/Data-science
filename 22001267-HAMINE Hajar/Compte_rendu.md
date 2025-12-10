@@ -1,8 +1,6 @@
 # HAMINE Hajar
 
-<img src="Hajar.jpg" style="height:300px;margin-right:300px; float:left; border-radius:10px;"/> <img src="encg settat.jpeg" style="height:300px;margin-right:300px; float:left; border-radius:10px;"/>
-
-
+<img src="encg settat.jpeg" style="height:300px;margin-right:300px; float:left; border-radius:10px;"/> <img src="Hajar.jpg" style="height:300px;margin-right:300px; float:left; border-radius:10px;"/> 
 
 **Numéro d'étudiant** : 22001267  
 **Classe** : CAC2
